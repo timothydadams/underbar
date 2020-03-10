@@ -307,6 +307,19 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+
+    //let items = arguments;
+
+    for (var item = 1; item < arguments.length; item++) {
+      if (typeof arguments[item] === 'object') {
+        for (var j in arguments[item]) {
+          obj[j] = arguments[item][j];
+        }
+      } else {
+        obj[item] = arguments[item];
+      }
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already

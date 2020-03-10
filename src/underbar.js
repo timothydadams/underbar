@@ -308,7 +308,7 @@
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
 
-    //let items = arguments;
+    //let items = arguments.slice(1);
 
     for (var item = 1; item < arguments.length; item++) {
       if (typeof arguments[item] === 'object') {
@@ -325,6 +325,21 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+
+    for (var item = 1; item < arguments.length; item++) {
+      if (typeof arguments[item] === 'object') {
+        for (var j in arguments[item]) {
+          if (obj[j] === undefined) {
+            obj[j] = arguments[item][j];
+          }
+        }
+      } else {
+        if (obj[item] === undefined) {
+          obj[item] = arguments[item];
+        }
+      }
+    }
+    return obj;
   };
 
 

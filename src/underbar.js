@@ -59,7 +59,7 @@
       for (let i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
-    } else if (typeof collection === 'object') {
+    } else {
       for (var item in collection) {
         iterator(collection[item], item, collection);
       }
@@ -87,27 +87,46 @@
   _.filter = function(collection, test) {
     var results = [];
 
-    _.each(collection, function(item) {
-      if (test(item)) {
-        results.push(item);
+
+    if (Array.isArray(collection)) {
+      _.each(collection, function(item) {
+        if (test(item)) {
+          results.push(item);
+        }
+      });
+    } else {
+      for (let item in collection) {
+        _.each(collection[item], function() {
+          if (test(collection[item])) {
+            results.push(collection[item]);
+          }
+        });
       }
-    });
+
+    }
+
     return results;
+
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    var results = [];
-     _.each(collection, function(item) {
-       if (!test(item)) {
-        results.push(item);
-       }
-     });
-     return results;
-
+    return _.filter(collection, function(item) {
+      return !test(item);
+    });
   };
+
+    // var results = [];
+     // _.each(collection, function(item) {
+       // if (!test(item)) {
+        // results.push(item);
+       // }
+     // });
+     // return results;
+
+  //};
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
@@ -149,9 +168,16 @@
     // the members, it also maintains an array of results.
     var results = [];
 
-    for (let i = 0; i < collection.length; i++) {
-      var newValue = iterator(collection[i]);
-      results.push(newValue);
+    if (Array.isArray(collection)) {
+      for (let i = 0; i < collection.length; i++) {
+        var newValue = iterator(collection[i]);
+        results.push(newValue);
+      }
+    } else {
+      for (let i in collection) {
+        var newValue = iterator(collection[i]);
+        results.push(newValue);
+      }
     }
 
     return results;
@@ -206,13 +232,11 @@
       return accumulator;
 
     } else {
-      for (let i = 0; i < collection.length; i++) {
+      for (let i in collection) {
         accumulator = iterator(accumulator, collection[i]);
       }
       return accumulator;
-
     }
-
   };
 
 
@@ -221,18 +245,29 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
+
     return _.reduce(collection, function(wasFound, item) {
       if (wasFound) {
         return true;
-      }
+      } 
       return item === target;
     }, false);
   };
 
 
   // Determine whether all of the elements match a truth test.
-  _.every = function(collection, iterator) {
+  _.every = function(collection, test) {
     // TIP: Try re-using reduce() here.
+
+    if (arguments[1] === undefined) {
+      test = function(item) {
+        return item === true;
+      };
+    }
+    
+    return _.reduce(collection, function(allPass, item) {
+      return !!test(item) && allPass;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is

@@ -384,11 +384,16 @@
   // instead if possible.
 
   _.memoize = function(func) {
+    //research scopes & closures
     var cache = {};
-    var key = '' + arguments;
+    //var key = arguments;
 
-    return function(key) {
+    return function() {
+      //check if value getting passed in is in the cache already
+      var key = JSON.stringify(arguments);
+      
       if (!(key in cache)) {
+      //if (cache[key] === undefined) {
         cache[key] = func.apply(this, arguments);
       }
       return cache[key];

@@ -422,6 +422,30 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newArray = array.slice(0);
+    var indexArray = Array(0);
+
+ 
+    var num = function() {
+      var max = newArray.length - 1;
+      var min = 0;
+      return Math.floor(Math.random() * (max - min +1)) + min;
+    };
+
+    while (indexArray.length < newArray.length) {
+      var test = num();
+      if (_.contains(indexArray, test) === false) {
+        indexArray.push(test);
+      }
+    }
+
+    var returnArray = [];
+    for (var i = 0; i < newArray.length; i++) {
+      returnArray.push(newArray[indexArray[i]]);
+    }
+
+    return returnArray;
+
   };
 
 
